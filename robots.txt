@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Sitemap: https://meshcorebulgaria.azurewebsites.net/sitemap.xml
+
+# Allow specific important pages
+Allow: /index.html
+Allow: /images/
+
+# Optionally disallow nothing (search engines can crawl all content)
+# Disallow:
