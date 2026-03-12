@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
-Sitemap: https://meshcorebulgaria.azurewebsites.net/sitemap.xml
+Sitemap: https://kekelback.github.io/meshcore-bulgaria-site/sitemap.xml
 
 # Allow specific important pages
 Allow: /index.html
