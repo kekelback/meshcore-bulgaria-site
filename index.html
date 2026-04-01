@@ -46,103 +46,92 @@
 }
 </script>
 <style>
+:root {
+  --primary-blue: #38bdf8;
+  --primary-blue-light: #7dd3fc;
+  --dark-bg: #13192A;
+  --darker-bg: #0d1117;
+  --border-color: #1e293b;
+  --text-primary: #e5e7eb;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --banner-gold: #fb9f00;
+  --overlay-dark: rgba(19, 25, 42, 0.9);
+}
+
 html {
   scroll-behavior: smooth;
 }
+
 body {
   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   margin: 0;
-  background: #13192A;
-  color: #e5e7eb;
+  background: var(--dark-bg);
+  color: var(--text-primary);
   line-height: 1.6;
+  padding-top: 70px;
 }
-header {
-  padding: 60px 20px 40px;
-  text-align: center;
+
+body.banner-hidden {
+  padding-top: 0;
 }
-header img {
-  width: 90px;
-  margin-bottom: 12px;
-  opacity: 0.9;
-}
-h1 {
-  margin: 0;
-  font-size: 2.4rem;
-  font-weight: 600;
-}
-.subtitle {
-  color: #94a3b8;
-  margin-top: 10px;
-}
-nav {
-  display: flex;
-  justify-content: center;
-  gap: 35px;
-  padding: 18px;
-  position: sticky;
-  top: 0;
-  background: rgba(19,25,42,0.9);
-  backdrop-filter: blur(6px);
-  border-bottom: 1px solid #1e293b;
-}
-nav a {
-  text-decoration: none;
-  font-weight: 500;
-  color: #38bdf8;
-}
-nav a:hover {
-  color: #7dd3fc;
-}
+
 section {
   max-width: 900px;
   margin: 70px auto;
   padding: 30px;
-  background: #0d1117;
+  background: var(--darker-bg);
   border-radius: 10px;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--border-color);
 }
+
 section h2 {
   font-size: 1.5rem;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 10px;
   margin-bottom: 20px;
 }
+
 ul {
   padding-left: 20px;
 }
+
 a {
-  color: #38bdf8;
+  color: var(--primary-blue);
 }
+
 a:hover {
-  color: #7dd3fc;
+  color: var(--primary-blue-light);
 }
+
 code {
-  background: #0d1117;
+  background: var(--darker-bg);
   padding: 2px 6px;
   border-radius: 4px;
-  color: #7dd3fc;
+  color: var(--primary-blue-light);
   font-family: monospace;
 }
+
 pre {
-  background: #0d1117;
+  background: var(--darker-bg);
   padding: 16px;
   border-radius: 8px;
   overflow-x: auto;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--border-color);
 }
+
 .footer {
   text-align: center;
   padding: 40px 20px;
-  color: #64748b;
+  color: var(--text-tertiary);
   font-size: 0.9rem;
-  border-top: 1px solid #1e293b;
+  border-top: 1px solid var(--border-color);
   margin-top: 60px;
 }
-</style>
-<style>
+
 /* Header styling */
 .header {
-  background: rgba(19,25,42,0.95);
+  background: var(--overlay-dark);
   padding: 8px 20px;
   backdrop-filter: blur(6px);
   position: sticky;
@@ -150,6 +139,7 @@ pre {
   z-index: 1000;
   transform: translateY(0);
   transition: transform 0.3s ease;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .header.hidden {
@@ -166,7 +156,7 @@ pre {
 }
 
 .logo {
-  width: 60px;
+  width: 150px;
   flex-shrink: 0;
 }
 
@@ -179,7 +169,7 @@ pre {
 .title-container .subtitle {
   margin: 0;
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
 
 /* Navigation styling */
@@ -192,7 +182,7 @@ pre {
 }
 
 .nav a {
-  color: #38bdf8;
+  color: var(--primary-blue);
   text-decoration: none;
   font-weight: 500;
   padding: 6px 10px;
@@ -201,8 +191,42 @@ pre {
 }
 
 .nav a:hover {
-  background: #1e293b;
-  color: #7dd3fc;
+  background: var(--border-color);
+  color: var(--primary-blue-light);
+}
+
+/* Banner styling */
+.banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 2000;
+  background: rgba(251, 159, 0, 0.85);
+  color: var(--dark-bg);
+  padding: 12px 20px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 1rem;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(19, 25, 42, 0.3);
+}
+
+.banner.hidden {
+  display: none;
+}
+
+.banner-text {
+  display: inline-block;
+  animation: scroll 30s linear infinite;
+  white-space: pre;
+  padding: 0 50px;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(50%); }
+  100% { transform: translateX(-100%); }
 }
 
 /* Responsive tweaks */
@@ -212,9 +236,6 @@ pre {
   }
   .header-inner {
     gap: 10px;
-  }
-  .logo {
-    width: 45px;
   }
   .title-container h1 {
     font-size: 1.3rem;
@@ -244,9 +265,6 @@ pre {
   .title-container .subtitle {
     font-size: 0.85rem;
   }
-  .logo {
-    width: 40px;
-  }
   .nav {
     gap: 4px;
   }
@@ -258,9 +276,32 @@ pre {
 </style>
 </head>
 <body>
+<div class="banner" id="banner">
+  <div class="banner-text" id="bannerText">Моля, ъпдейтнете си всички устройства с фърмуер > 1.14                  Това е необходимо, за да можем в близко бъдеще да преминем към 2-байтов хеш за имената на репитрите                  Подробно описание на функцията <a href="https://www.facebook.com/groups/meshcore/posts/2546138609137532/" target="_blank" rel="noopener noreferrer">ТУК</a></div>
+</div>
+<!-- TO HIDE BANNER: Add "hidden" class above like this: <div class="banner hidden" id="banner"> -->
+<!-- TO SHOW BANNER: Remove "hidden" class: <div class="banner" id="banner"> -->
+<script>
+// Restore banner state and text on page load
+window.addEventListener('load', function() {
+  const banner = document.getElementById('banner');
+  const body = document.body;
+  
+  // Check if banner has 'hidden' class and adjust body padding
+  if (banner.classList.contains('hidden')) {
+    body.classList.add('banner-hidden');
+  }
+  
+  // Restore saved banner text
+  const savedText = localStorage.getItem('bannerText');
+  if (savedText) {
+    document.getElementById('bannerText').textContent = savedText;
+  }
+});
+</script>
 <header class="header">
   <div class="header-inner">
-    <a href="index.html" title="Go to homepage"><img src="images/meshcore-logo.png" alt="Meshcore Bulgaria Logo - Decentralized Radio Communication Network" class="logo"></a>
+    <a href="index.html" title="Go to homepage"><img src="images/meshcore-logo.png" alt="Meshcore Bulgaria Logo - Decentralized Radio Communication Network" class="logo" loading="lazy"></a>
     <div class="title-container">
       <h1>Meshcore Bulgaria</h1>
       <p class="subtitle">Общност за Meshcore мрежи в България</p>
@@ -271,6 +312,7 @@ pre {
     <a href="#setup">Настройки</a>
     <a href="#channels">Публични канали</a>
     <a href="#links">Полезни връзки</a>
+    <a href="https://pic.meshcore.bg" target="_blank" rel="noopener noreferrer">Image hosting</a>
   </nav>
 </header>
 <section id="about">
@@ -298,7 +340,7 @@ Coding rate: <code>8</code>
 Освен default канала <strong>Public</strong>, използваме и следните публични канали:
 </p>
 <p>
-<strong>#Test</strong><br>
+<strong>#test</strong><br>
 За тестване и всякакъв спам, чието място не е в общия канал
 </p>
 <p>
@@ -307,15 +349,20 @@ Coding rate: <code>8</code>
 </p>
 <p>
 <strong>#bot</strong><br>
-Канал с бот, който отговаря на <a href="https://github.com/agessaman/meshcore-bot/blob/main/docs/command-reference.md" target="_blank" rel="noopener noreferrer">следните команди</a><br>
+Канал с бот, който отговаря на <a href="https://github.com/agessaman/meshcore-bot/blob/main/docs/command-reference.md" target="_blank" rel="noopener noreferrer">следните команди</a>
+</p>
 <p>
 <strong>#plovdivbot</strong><br>
-Канал с бот за гр. Пловдив<br></p>
+Канал с бот за гр. Пловдив
+</p>
 <p>
 <strong>#sofia</strong><br>
-Канал за гр. София<p>
+Канал за гр. София
+</p>
+<p>
 <strong>#emergency</strong><br>
-Само за извънредни ситуации<br>
+Само за извънредни ситуации
+</p>
 </section>
 <section id="links">
 <h2>Полезни връзки</h2>
@@ -326,7 +373,7 @@ Coding rate: <code>8</code>
 <li><a href="https://app.meshcore.nz" target="_blank" rel="noopener noreferrer">Meshcore Web App</a></li>
 <li><a href="https://wardrive.meshmapper.net/" target="_blank" rel="noopener noreferrer">Meshcore wardriving (mobile application only)</a></li>
 <li><a href="https://github.com/IoTThinks/EasySkyMesh/releases" target="_blank" rel="noopener noreferrer">Easy SkyMesh Powersaving Firmware for repeaters and companions</a></li>
-</ul>
+<li><a href="https://github.com/kekelback/meshcore-bulgaria-site/" target="_blank" rel="noopener noreferrer">meshcore.bg on github</a></li></ul>
 </section>
 <footer class="footer">
 © Meshcore Bulgaria
