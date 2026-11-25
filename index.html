@@ -1,992 +1,793 @@
-<!DOCTYPE html>
-<html lang="bg">
+<!doctype html>
+<html lang="bg" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Meshcore Bulgaria - Independent decentralized LoRa offgrid mesh network community. Connect with meshcore enthusiasts and mesh radio operators. Learn about mesh communication, LoRa networking, and join our Bulgaria mesh network.">
-<meta name="keywords" content="meshcore bulgaria, mesh core, meshtastic, lora communication, mesh network, mesh radio, offgrid communication, bulgaria, LoRa network">
-<meta property="og:image" content="https://www.meshcore.bg/images/meshcore-logo.png">
-<meta property="og:title" content="Meshcore Bulgaria - Mesh Network & LoRa Communication Community">
-<meta property="og:description" content="Join Bulgaria's decentralized meshcore network. Learn meshcore setup, LoRa communication, and connect with mesh radio enthusiasts.">
-<meta property="og:url" content="https://www.meshcore.bg/">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Meshcore Bulgaria - Mesh & LoRa Network">
-<meta name="twitter:description" content="Decentralized offgrid meshcore network community. Mesh & LoRa communication in Bulgaria.">
-<link rel="icon" type="image/png" href="images/signal-logo.png">
-<link rel="icon" type="image/png" sizes="48x48" href="/favicon.png">
-<link rel="canonical" href="https://www.meshcore.bg/">
-<link rel="sitemap" type="application/xml" href="sitemap.xml">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-NRCZQDTV4V"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-NRCZQDTV4V');
-</script>
-<title>Meshcore Bulgaria - Mesh Network, LoRa Communication & Meshcore Community</title>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Meshcore Bulgaria",
-  "url": "https://www.meshcore.bg/",
-  "logo": "https://www.meshcore.bg/images/meshcore-logo.png",
-  "description": "Independent decentralized LoRa mesh network and meshcore communication community in Bulgaria. Learn about mesh radio networks, offgrid communication, and LoRa technology.",
-  "areaServed": "BG",
-  "keywords": "meshcore bulgaria, mesh network, meshtastic, lora, communication, offgrid",
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "contactType": "Community Support",
-    "url": "https://www.facebook.com/groups/1555471979162054"
-  }
-}
-</script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<style>
-*, *::before, *::after { box-sizing: border-box; }
-:root {
-  --primary-blue: #38bdf8;
-  --primary-blue-light: #7dd3fc;
-  --dark-bg: #0f172a;
-  --darker-bg: #0d1117;
-  --card-bg: #1e293b;
-  --border-color: #1e293b;
-  --text-primary: #e5e7eb;
-  --text-secondary: #94a3b8;
-  --text-tertiary: #64748b;
-  --banner-gold: #fb9f00;
-  --accent-green: #4ade80;
-  --overlay-dark: rgba(15, 23, 42, 0.9);
-}
-html { scroll-behavior: smooth; background: #0d1117; }
-body {
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  margin: 0;
-  background: #0d1117;
-  color: var(--text-primary);
-  line-height: 1.6;
-  padding-top: 80px;
-}
-#mesh-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
-  pointer-events: none;
-}
-body.banner-hidden { padding-top: 0; }
-body.banner-visible { padding-top: 0; }
-body.padded-for-header { padding-top: 0; }
-a { color: var(--primary-blue); text-decoration: none; }
-a:hover { color: var(--primary-blue-light); }
-
-/* Banner */
-.banner {
-  position: fixed; top: 0; left: 0; right: 0;
-  width: 100%; z-index: 2000;
-  background: rgba(251, 159, 0, 0.85);
-  color: var(--dark-bg);
-  padding: 10px 20px;
-  text-align: center;
-  font-weight: 500;
-  font-size: 0.9rem;
-  overflow: hidden;
-  border-bottom: 1px solid rgba(19, 25, 42, 0.3);
-}
-.banner.hidden { display: none; }
-.banner-text {
-  display: inline-block;
-  animation: scroll 45s linear infinite;
-  white-space: pre;
-  padding: 0 50px;
-}
-@keyframes scroll {
-  0% { transform: translateX(50%); }
-  100% { transform: translateX(-100%); }
-}
-
-/* Header */
-.header {
-  background: rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(10px);
-  padding: 0 16px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  transform: translateY(0);
-  transition: transform 0.3s ease;
-  border-bottom: 1px solid var(--border-color);
-}
-body.banner-hidden .header { top: 0; }
-body:not(.banner-hidden) .banner ~ .header { top: auto; }
-.header.hidden { transform: translateY(-100%); }
-.header-inner {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 10px 0;
-  gap: 12px;
-}
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.logo { width: 40px; height: 40px; flex-shrink: 0; }
-.title-container h1 {
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-.title-container .subtitle {
-  margin: 0;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  white-space: nowrap;
-}
-.nav {
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-  gap: 2px;
-}
-.nav a {
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.82rem;
-  padding: 6px 7px;
-  border-radius: 6px;
-  transition: background 0.2s, color 0.2s;
-  white-space: nowrap;
-}
-.nav a:hover { background: var(--card-bg); color: var(--primary-blue); }
-.nav .nav-cta {
-  background: var(--primary-blue);
-  color: #000;
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-weight: 600;
-}
-.nav .nav-cta:hover { background: var(--primary-blue-light); color: #000; }
-
-/* Language switcher */
-.lang-switcher {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  margin-left: 4px;
-  position: relative;
-}
-.lang-switcher select {
-  appearance: none;
-  -webkit-appearance: none;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  color: var(--text-secondary);
-  padding: 5px 24px 5px 8px;
-  font-size: 0.82rem;
-  font-family: inherit;
-  cursor: pointer;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.lang-switcher select:hover { border-color: var(--primary-blue); }
-.lang-switcher select option {
-  background: var(--card-bg);
-  color: var(--text-primary);
-}
-.lang-switcher::after {
-  content: '\25BC';
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.5rem;
-  color: var(--text-secondary);
-  pointer-events: none;
-}
-
-/* Section common */
-.section {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 60px 24px;
-}
-.section h2 {
-  font-size: 1.8rem;
-  font-weight: 700;
-  text-align: center;
-  margin: 0 0 12px 0;
-}
-.section .section-subtitle {
-  text-align: center;
-  color: var(--text-secondary);
-  font-size: 1rem;
-  margin-bottom: 40px;
-}
-.section-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 60px 24px;
-}
-
-/* Hero */
-.hero {
-  background: linear-gradient(180deg, rgba(56, 189, 248, 0.08) 0%, transparent 100%);
-  text-align: center;
-  padding: 80px 24px 60px;
-}
-.hero-badges {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-bottom: 24px;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-}
-.hero-badges span { opacity: 0.7; }
-.hero-logo { width: 120px; margin-bottom: 20px; }
-.hero h1 {
-  font-size: 2.8rem;
-  font-weight: 800;
-  margin: 0 0 16px 0;
-  line-height: 1.2;
-}
-.hero p {
-  font-size: 1.15rem;
-  color: var(--text-secondary);
-  max-width: 600px;
-  margin: 0 auto 32px;
-}
-.hero-buttons {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 22px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-  cursor: pointer;
-  text-decoration: none;
-}
-.btn-primary { background: var(--primary-blue); color: #000; }
-.btn-primary:hover { background: var(--primary-blue-light); color: #000; }
-.btn-outline { border: 1px solid var(--border-color); color: var(--text-primary); }
-.btn-outline:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
-.btn-secondary { background: var(--card-bg); color: var(--text-primary); }
-.btn-secondary:hover { background: #334155; color: var(--primary-blue); }
-.social-icons {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 24px;
-}
-.social-icons a {
-  width: 40px; height: 40px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 50%;
-  background: var(--card-bg);
-  color: var(--text-secondary);
-  transition: all 0.2s;
-  font-size: 1.3rem;
-  text-decoration: none;
-}
-.social-icons a:hover { background: var(--primary-blue); color: #000; }
-
-/* Feature grid */
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
-}
-.feature-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 28px 24px;
-  text-align: center;
-  transition: border-color 0.2s;
-}
-.feature-card:hover { border-color: var(--primary-blue); }
-.feature-icon {
-  width: 48px; height: 48px;
-  margin: 0 auto 16px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 12px;
-  font-size: 1.5rem;
-}
-.feature-card h3 { margin: 0 0 8px 0; font-size: 1.1rem; }
-.feature-card p { margin: 0; font-size: 0.9rem; color: var(--text-secondary); }
-
-/* Steps */
-.steps {
-  display: flex;
-  justify-content: center;
-  gap: 32px;
-  flex-wrap: wrap;
-  margin-top: 24px;
-}
-.step {
-  flex: 1;
-  min-width: 200px;
-  max-width: 300px;
-  text-align: center;
-}
-.step-number {
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  background: var(--primary-blue);
-  color: #000;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin: 0 auto 16px;
-}
-.step h3 { margin: 0 0 8px 0; font-size: 1.1rem; }
-.step p { margin: 0; font-size: 0.9rem; color: var(--text-secondary); }
-.step .step-link { display: block; margin-top: 8px; font-weight: 500; font-size: 0.9rem; }
-
-/* Download */
-.download-buttons {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 32px;
-}
-.download-btn {
-  display: flex; align-items: center; gap: 8px;
-  padding: 12px 18px;
-  border-radius: 10px;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  font-weight: 500;
-  transition: all 0.2s;
-}
-.download-btn:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
-.screenshots {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  max-width: 900px;
-  margin: 0 auto;
-}
-.screenshots img {
-  width: 100%; height: auto;
-  border-radius: 10px;
-  border: 1px solid var(--border-color);
-}
-
-/* Devices */
-.device-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 24px;
-}
-.device-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 24px;
-  text-align: center;
-}
-.device-card .device-img {
-  width: 100%; max-width: 180px;
-  height: auto; margin: 0 auto 16px;
-}
-.device-card h3 { margin: 0 0 4px 0; font-size: 1rem; }
-.device-card .brand-img {
-  height: 20px; width: auto;
-  margin-bottom: 12px;
-  opacity: 0.7;
-}
-.device-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
-.device-links a {
-  font-size: 0.8rem; padding: 6px 12px;
-  border-radius: 6px; border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  transition: all 0.2s;
-}
-.device-links a:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
-
-/* Videos */
-.video-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 24px;
-  max-width: 800px;
-  margin: 0 auto;
-}
-.video-grid iframe {
-  width: 100%; height: 240px;
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-}
-
-/* Existing content sections */
-.content-section {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 40px 24px;
-}
-.content-section h2 { text-align: left; font-size: 1.5rem; }
-.content-section ul { padding-left: 20px; }
-.content-section p { color: var(--text-secondary); }
-code {
-  background: var(--card-bg);
-  padding: 2px 6px;
-  border-radius: 4px;
-  color: var(--primary-blue-light);
-  font-family: monospace;
-}
-
-/* About section with badges */
-.about-badges {
-  display: flex; gap: 12px; justify-content: center;
-  margin-bottom: 20px; font-size: 0.85rem; color: var(--text-secondary);
-}
-
-/* Footer */
-.footer {
-  border-top: 1px solid var(--border-color);
-  padding: 40px 24px;
-  margin-top: 60px;
-}
-.footer-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-}
-.footer-badges {
-  display: flex;
-  gap: 16px;
-  font-size: 0.85rem;
-  color: var(--text-tertiary);
-}
-.footer-nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
-}
-.footer-nav a { color: var(--text-tertiary); font-size: 0.85rem; }
-.footer-nav a:hover { color: var(--primary-blue); }
-.footer .social-icons { margin-top: 0; }
-.footer-copy {
-  color: var(--text-tertiary);
-  font-size: 0.8rem;
-}
-
-/* Quick start link */
-.quick-start-link {
-  display: block;
-  text-align: center;
-  margin-top: 24px;
-  font-weight: 500;
-}
-
-/* Section header with devices subtitle */
-.section-subtitle-sm { text-align: center; color: var(--text-tertiary); font-size: 0.9rem; margin-bottom: 24px; }
-
-/* Responsive */
-@media (max-width: 768px) {
-  body { padding-top: 70px; }
-  .header-inner { flex-direction: column; padding: 8px 0; gap: 8px; }
-  .nav { flex-wrap: wrap; justify-content: center; gap: 4px; padding: 0 4px; }
-  .nav a { font-size: 0.75rem; padding: 4px 8px; }
-  .hero h1 { font-size: 2rem; }
-  .hero p { font-size: 1rem; }
-  .section { padding: 40px 16px; }
-  .section-inner { padding: 40px 16px; }
-  .feature-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
-  .video-grid iframe { height: 200px; }
-}
-@media (max-width: 480px) {
-  body { padding-top: 70px; }
-  .hero h1 { font-size: 1.6rem; }
-  .steps { flex-direction: column; align-items: center; }
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Meshcore Bulgaria — Off-grid мрежа с отворен код и криптирани съобщения</title>
+  <meta name="description" content="Meshcore Bulgaria — общност за Meshcore мрежи в България. Off-grid LoRa комуникация, криптирани съобщения, отворен код.">
+  <link rel="icon" type="image/png" href="assets/meshcore-logo-orig.png">
+  <link rel="stylesheet" href="css/style.css?v=4">
 </head>
 <body>
-<canvas id="mesh-canvas"></canvas>
-<div class="banner" id="banner">
-  <div class="banner-text" id="bannerText">Важно! Започваме да използваме региони. Повече информация в секциите с настройки, канали и региони.                   Моля, настройте репитрите и клиентите си да ползват 2-байтов хеш</div>
+<a class="skip-link" href="#main" data-i18n="skip">Към съдържанието</a>
+
+<!-- ═══════════════ Announcement banner (slim + dismissible) ═══════════════ -->
+<div class="banner" id="banner" role="region" aria-label="Важно съобщение" data-i18n-aria="banner.aria">
+  <div class="container banner-inner">
+    <svg class="banner-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <p class="banner-text" data-i18n-html="banner.text">Преминаваме към <strong>региони</strong> и <strong>2-байтов хеш</strong> — настройте репитрите и клиентите си. <a href="#setup">Вижте как →</a></p>
+    <button class="banner-close" id="banner-close" type="button" aria-label="Затвори съобщението" data-i18n-aria="banner.close">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
 </div>
-<script>
-window.addEventListener('load', function() {
-  const banner = document.getElementById('banner');
-  const body = document.body;
-  if (banner.classList.contains('hidden')) {
-    body.classList.add('banner-hidden');
-  } else {
-    body.classList.add('banner-visible');
-  }
-  const savedText = localStorage.getItem('bannerText');
-  if (savedText) {
-    document.getElementById('bannerText').textContent = savedText;
-  }
-});
-</script>
 
-<header class="header" id="header">
-  <div class="header-inner">
-    <div class="header-left">
-      <a href="index.html"><img src="images/meshcore-logo.png" alt="Meshcore Bulgaria" class="logo"></a>
-      <div class="title-container">
-        <h1>Meshcore Bulgaria</h1>
-        <p class="subtitle">Общност за Meshcore мрежи в България</p>
-      </div>
-    </div>
-    <nav class="nav">
-      <a href="#about">За нас</a>
-      <a href="#features">Характеристики</a>
-      <a href="#setup">Настройки</a>
-      <a href="#channels">Канали</a>
-      <a href="#regions">Региони</a>
+<!-- ═══════════════ Header ═══════════════ -->
+<header class="header" id="top">
+  <div class="container header-inner">
+    <a class="brand" href="#top" aria-label="Meshcore Bulgaria — начало">
+      <img class="brand-mark" src="assets/meshcore-logo.png" alt="Лого на MeshCore" width="48" height="48">
+      <span class="brand-name" data-i18n="brand.sub">България</span>
+    </a>
 
-      <a href="#links">Връзки</a>
-      <a href="https://pic.meshcore.bg/" target="_blank" rel="noopener">Image Hosting</a>
-      <a href="https://corescope.malinovi.com/" target="_blank" rel="noopener">CoreScope</a>
-      <a href="https://blog.meshcore.io" target="_blank" rel="noopener">Blog</a>
-      <a href="https://docs.meshcore.io" target="_blank" rel="noopener">Docs</a>
-      <a href="https://meshcore.io/flasher" target="_blank" rel="noopener">Flasher</a>
-      <a href="https://map.meshcore.io" target="_blank" rel="noopener">Map</a>
-      <a href="https://app.meshcore.nz" target="_blank" rel="noopener" class="nav-cta">Launch App</a>
+    <nav class="nav" aria-label="Основна навигация" data-i18n-aria="nav.aria">
+      <a href="#features" class="nav-link" data-i18n="nav.features">Характеристики</a>
+      <a href="#about" class="nav-link" data-i18n="nav.about">За нас</a>
+      <a href="#start" class="nav-link" data-i18n="nav.start">Как да започнете</a>
+      <a href="#setup" class="nav-link" data-i18n="nav.setup">Настройки</a>
+      <a href="#channels" class="nav-link" data-i18n="nav.channels">Канали</a>
+      <a href="#regions" class="nav-link" data-i18n="nav.regions">Региони</a>
+      <a href="#links" class="nav-link" data-i18n="nav.links">Връзки</a>
     </nav>
-    <div class="lang-switcher">
-      <select id="langSelect" onchange="switchLanguage(this.value)">
-        <option value="bg">&#x1F1E7;&#x1F1EC; BG</option>
-        <option value="ro">&#x1F1F7;&#x1F1F4; RO</option>
-        <option value="sr">&#x1F1F7;&#x1F1F8; RS</option>
-      </select>
+
+    <div class="header-actions">
+      <div class="dropdown">
+        <button class="icon-btn dropdown-toggle" type="button" aria-expanded="false" aria-haspopup="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span data-i18n="nav.resources">Ресурси</span>
+          <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="dropdown-menu" role="menu">
+          <a role="menuitem" href="https://blog.meshcore.io" target="_blank" rel="noopener" data-i18n="res.blog">Blog</a>
+          <a role="menuitem" href="https://docs.meshcore.io" target="_blank" rel="noopener" data-i18n="res.docs">Docs</a>
+          <a role="menuitem" href="https://meshcore.io/flasher" target="_blank" rel="noopener" data-i18n="res.flasher">Web Flasher</a>
+          <a role="menuitem" href="https://map.meshcore.io" target="_blank" rel="noopener" data-i18n="res.map">Map</a>
+          <a role="menuitem" href="https://corescope.malinovi.com/" target="_blank" rel="noopener" data-i18n="res.corescope">CoreScope</a>
+          <a role="menuitem" href="https://pic.meshcore.bg/" target="_blank" rel="noopener" data-i18n="res.pic">Image Hosting</a>
+          <a role="menuitem" href="https://github.com/kekelback/meshcore-bulgaria-site/" target="_blank" rel="noopener" data-i18n="res.ghsite">GitHub на сайта</a>
+        </div>
+      </div>
+
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Смяна на темата" data-i18n-aria="a11y.theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg>
+      </button>
+
+      <button class="icon-btn lang-btn" id="lang-toggle" type="button" aria-label="Смяна на езика" data-i18n-aria="a11y.lang">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span id="lang-label">EN</span>
+      </button>
+
+      <a class="btn btn-primary btn-app" href="https://app.meshcore.nz" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span data-i18n="nav.launch">Старт</span>
+      </a>
+
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="Меню" aria-expanded="false" data-i18n-aria="a11y.menu">
+        <svg class="icon-menu" viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+        <svg class="icon-close" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <nav aria-label="Мобилна навигация" data-i18n-aria="nav.aria">
+      <a href="#features" data-i18n="nav.features">Характеристики</a>
+      <a href="#about" data-i18n="nav.about">За нас</a>
+      <a href="#start" data-i18n="nav.start">Как да започнете</a>
+      <a href="#setup" data-i18n="nav.setup">Настройки</a>
+      <a href="#channels" data-i18n="nav.channels">Канали</a>
+      <a href="#regions" data-i18n="nav.regions">Региони</a>
+      <a href="#links" data-i18n="nav.links">Връзки</a>
+    </nav>
+    <div class="mobile-ext">
+      <a href="https://blog.meshcore.io" target="_blank" rel="noopener" data-i18n="res.blog">Blog</a>
+      <a href="https://docs.meshcore.io" target="_blank" rel="noopener" data-i18n="res.docs">Docs</a>
+      <a href="https://meshcore.io/flasher" target="_blank" rel="noopener" data-i18n="res.flasher">Web Flasher</a>
+      <a href="https://map.meshcore.io" target="_blank" rel="noopener" data-i18n="res.map">Map</a>
+      <a href="https://corescope.malinovi.com/" target="_blank" rel="noopener" data-i18n="res.corescope">CoreScope</a>
+      <a href="https://pic.meshcore.bg/" target="_blank" rel="noopener" data-i18n="res.pic">Image Hosting</a>
     </div>
   </div>
 </header>
 
-<script>
-function switchLanguage(targetLang) {
-  if (targetLang === 'bg') {
-    window.location.href = window.location.href.replace(/[?&]lang=.*/,'').replace(/\?$/,'');
-    return;
-  }
-  var url = 'https://www.meshcore.bg' + window.location.pathname + window.location.hash;
-  var translateUrl = 'https://translate.google.com/translate?hl=' + targetLang + '&sl=auto&tl=' + targetLang + '&u=' + encodeURIComponent(url);
-  window.location.href = translateUrl;
-}
-</script>
+<main id="main">
 
-<!-- Hero -->
-<section class="hero">
-  <div class="hero-badges"></div>
-  <img src="images/meshcore-logo.png" alt="Meshcore" class="hero-logo">
-  <h1>Off-grid мрежа, с отворен код,<br>криптирани съобщения</h1>
-  <p>Meshcore е проста, сигурна, off-grid mesh комуникационна система. Изградете своя евтина, криптирана мрежа за съобщения, с голям обхват.</p>
-  <div class="hero-buttons">
-    <a href="https://github.com/meshcore-dev/meshcore" target="_blank" rel="noopener" class="btn btn-primary"><i class="fab fa-github"></i> GitHub</a>
-    <a href="https://www.facebook.com/groups/1555471979162054" target="_blank" rel="noopener" class="btn btn-outline"><i class="fab fa-facebook"></i> Facebook BG</a>
-    <a href="https://t.me/+ChZhHwrFwE05YWNk" target="_blank" rel="noopener" class="btn btn-outline"><i class="fab fa-telegram"></i> Telegram BG</a>
-    <a href="https://discord.gg/d6dpjjSeF" target="_blank" rel="noopener" class="btn btn-outline"><i class="fab fa-discord"></i> Discord BG</a>
-  </div>
-  <div class="social-icons">
-    <a href="https://facebook.com/groups/meshcore" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-    <a href="https://reddit.com/r/meshcore" target="_blank" rel="noopener" aria-label="Reddit"><i class="fab fa-reddit"></i></a>
-    <a href="https://meshcore.gg" target="_blank" rel="noopener" aria-label="Discord"><i class="fab fa-discord"></i></a>
-    <a href="https://mastodon.social/@meshcore" target="_blank" rel="noopener" aria-label="Mastodon"><i class="fab fa-mastodon"></i></a>
-    <a href="https://x.com/mesh_core" target="_blank" rel="noopener" aria-label="X"><i class="fab fa-x-twitter"></i></a>
-  </div>
-</section>
-
-<!-- Features -->
-<div class="section" id="features">
-  <h2>Характеристики</h2>
-  <p class="section-subtitle">Всичко от което се нуждаете за надеждна off-grid комуникация</p>
-  <div class="feature-grid">
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(56,189,248,0.15);color:var(--primary-blue)">&#x1F4D6;</div>
-      <h3>Отворен код</h3>
-      <p>MIT лицензиран фърмуер, инструменти и библиотеки, на които можете да се доверите и да допринасяте.</p>
+  <!-- ═══════════════ Hero ═══════════════ -->
+  <section class="hero" aria-label="Начало">
+    <canvas class="hero-canvas" id="hero-canvas" aria-hidden="true"></canvas>
+    <div class="container hero-inner">
+      <img class="hero-logo reveal" src="assets/meshcore-logo.png" alt="Лого на MeshCore" width="150" height="150">
+      <p class="hero-badge reveal">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 16.25a6 6 0 0 1 0-8.49"/></svg>
+        <span data-i18n="hero.badge">Общност · Отворен код · LoRa</span>
+      </p>
+      <h1 class="hero-title reveal" data-i18n="hero.title">Off-grid мрежа с отворен код и&nbsp;криптирани съобщения</h1>
+      <p class="hero-sub reveal" data-i18n="hero.sub">MeshCore е проста и сигурна mesh комуникационна система. Изградете своя евтина, криптирана мрежа за съобщения с голям обхват — без интернет и без мобилен оператор.</p>
+      <div class="hero-cta reveal">
+        <a class="btn btn-primary btn-lg" href="https://app.meshcore.nz" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span data-i18n="hero.cta1">Старт с MeshCore</span>
+        </a>
+        <a class="btn btn-ghost btn-lg" href="https://meshcore.io/flasher" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span data-i18n="hero.cta2">Флашнете устройство</span>
+        </a>
+      </div>
+      <div class="hero-social reveal" aria-label="Общност" data-i18n-aria="hero.social.aria">
+        <a class="social-chip" href="https://github.com/meshcore-dev/meshcore" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2.9-.3 1.9-.4 2.9-.4s2 .1 2.9.4c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.9 1.2 1.9 1.2 3.2 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>
+          <span>GitHub</span>
+        </a>
+        <a class="social-chip" href="https://www.facebook.com/groups/1555471979162054" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.09 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.7 4.53-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.61 23.09 24 18.1 24 12.07z"/></svg>
+          <span data-i18n="hero.fb">Facebook BG</span>
+        </a>
+        <a class="social-chip" href="https://t.me/+ChZhHwrFwE05YWNk" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M11.94 0A12 12 0 1 0 24 12 12 12 0 0 0 11.94 0zm5.58 6.16c.35-.01.78.09.99.5.2.4.12.92-.11 1.77l-2.67 12.55c-.2.9-.74 1.11-1.5.69l-4.14-3.05-2 1.92c-.22.22-.4.4-.83.4l.3-4.22 7.68-6.94c.33-.3-.07-.46-.51-.16l-9.5 5.98-4.09-1.28c-.89-.28-.9-.89.19-1.32l15.98-6.16c.55-.2 1-.05 1.11.32z"/></svg>
+          <span data-i18n="hero.tg">Telegram BG</span>
+        </a>
+        <a class="social-chip" href="https://discord.gg/d6dpjjSeF" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M18.6 5.3A15.3 15.3 0 0 0 14.9 4l-.2.4a13 13 0 0 1 3.3 1.6 11.5 11.5 0 0 0-9.9 0A13 13 0 0 1 11.3 4.4L11.1 4a15.3 15.3 0 0 0-3.7 1.3C4.9 9 4.2 12.6 4.5 16.2a15.6 15.6 0 0 0 4.7 2.4l.9-1.5a10 10 0 0 1-1.6-.8l.4-.3a11 11 0 0 0 9.4 0l.4.3c-.5.3-1 .6-1.6.8l.9 1.5a15.6 15.6 0 0 0 4.7-2.4c.4-4.2-.7-7.7-2.8-10.9zM9.7 14.1c-.9 0-1.6-.8-1.6-1.8s.7-1.8 1.6-1.8 1.6.8 1.6 1.8-.7 1.8-1.6 1.8zm4.6 0c-.9 0-1.6-.8-1.6-1.8s.7-1.8 1.6-1.8 1.6.8 1.6 1.8-.7 1.8-1.6 1.8z"/></svg>
+          <span data-i18n="hero.dc">Discord BG</span>
+        </a>
+      </div>
+      <a class="hero-scroll" href="#features" aria-label="Разгледайте надолу" data-i18n-aria="hero.scroll.aria">
+        <span data-i18n="hero.scroll">Разгледайте</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </a>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(74,222,128,0.15);color:var(--accent-green)">&#x1F512;</div>
-      <h3>Криптирани съобщения</h3>
-      <p>Съобщенията са end-to-end криптирани, за да гарантират, че вашите чатове остават лични.</p>
+  </section>
+
+  <!-- ═══════════════ Features ═══════════════ -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow" data-i18n="features.eyebrow">Възможности</p>
+        <h2 data-i18n="features.title">Характеристики</h2>
+        <p class="section-sub" data-i18n="features.sub">Всичко от което се нуждаете за надеждна off-grid комуникация</p>
+      </div>
+      <div class="grid grid-4">
+        <article class="card feature reveal">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+          <h3 data-i18n="feat.1.t">Отворен код</h3>
+          <p data-i18n="feat.1.d">MIT лицензиран фърмуер, инструменти и библиотеки, на които можете да се доверите и да допринасяте.</p>
+        </article>
+        <article class="card feature reveal">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <h3 data-i18n="feat.2.t">Криптирани съобщения</h3>
+          <p data-i18n="feat.2.d">Съобщенията са end-to-end криптирани, за да гарантират, че вашите чатове остават лични.</p>
+        </article>
+        <article class="card feature reveal">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 16.25a6 6 0 0 1 0-8.49M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/></svg></div>
+          <h3 data-i18n="feat.3.t">Голям обхват</h3>
+          <p data-i18n="feat.3.d">Използва LoRa технология за истинска off-grid свързаност на дълги разстояния.</p>
+        </article>
+        <article class="card feature reveal">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <h3 data-i18n="feat.4.t">Ниска консумация</h3>
+          <p data-i18n="feat.4.d">Оптимизираното енергопотребление позволява на батериите да издържат над седмица с едно зареждане.</p>
+        </article>
+        <article class="card feature reveal">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg></div>
+          <h3 data-i18n="feat.5.t">Публични канали</h3>
+          <p data-i18n="feat.5.d">Присъединете се към публични групови канали и обсъждайте интересни теми с mesh общността.</p>
+        </article>
+        <article class="card feature reveal">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3 data-i18n="feat.6.t">Частни канали</h3>
+          <p data-i18n="feat.6.d">Създайте частни криптирани групови канали за сигурно общуване с приятели и семейство.</p>
+        </article>
+        <article class="card feature reveal">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg></div>
+          <h3 data-i18n="feat.7.t">Слънчеви ретранслатори</h3>
+          <p data-i18n="feat.7.d">Разширете обхвата на вашата MeshCore мрежа със слънчеви ретранслатори на високи места.</p>
+        </article>
+        <article class="card feature reveal">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+          <h3 data-i18n="feat.8.t">MeshCore App</h3>
+          <p data-i18n="feat.8.d">Изтеглете нашето безплатно приложение за Android, iOS, Windows, Mac, Linux и Web.</p>
+        </article>
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(251,159,0,0.15);color:var(--banner-gold)">&#x1F4E1;</div>
-      <h3>Голям обхват</h3>
-      <p>Използва LoRa технология за истинска off-grid свързаност на дълги разстояния.</p>
+  </section>
+
+  <!-- ═══════════════ About ═══════════════ -->
+  <section class="section section-alt" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p class="eyebrow" data-i18n="about.eyebrow">Общност</p>
+          <h2 data-i18n="about.title">За нас</h2>
+          <p class="section-sub" data-i18n="about.sub">Meshcore България — общност за независима off-grid комуникация</p>
+          <p data-i18n="about.p1">Общност от хора, обединени от идеята за независима и децентрализирана off-grid комуникация.</p>
+          <p data-i18n-html="about.p2">Към момента имаме свързани мешове в <strong>София</strong> и <strong>Пловдив</strong>, както и на други места — общността и покритието се разрастват постоянно. Имаме и постоянна радио-връзка с <strong>Крайова</strong> и още няколко града в Румъния, както и с няколко локации в <strong>Сърбия</strong> — единствено по радио.</p>
+          <a class="btn btn-outline" href="#start">
+            <span data-i18n="about.cta">Как да участвате</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+        <div class="about-visual reveal">
+          <div class="card coverage-card">
+            <div class="coverage-head">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span data-i18n="about.map.title">Свързани само по радио</span>
+            </div>
+            <svg class="coverage-map" viewBox="0 40 546 372" role="img" aria-label="Реална карта: София, Пловдив, Крайова и Сърбия, свързани в mesh мрежа" data-i18n-aria="about.map.aria">
+              <image class="map-img map-img-dark" href="assets/map-dark.png" x="0" y="0" width="546" height="461"/>
+              <image class="map-img map-img-light" href="assets/map-light.png" x="0" y="0" width="546" height="461"/>
+              <path class="cov-link" d="M284 278 Q 349 300, 414 347"/>
+              <path class="cov-link" d="M414 347 Q 390 210, 328 74"/>
+              <path class="cov-link" d="M284 278 Q 219 226, 154 200"/>
+              <g class="cov-node" transform="translate(284 278)">
+                <circle class="cov-ring" r="14"/><circle class="cov-dot" r="7"/>
+                <text class="cov-label" y="-16" data-i18n="about.map.1">София</text><text class="cov-cc" y="26">BG</text>
+              </g>
+              <g class="cov-node" transform="translate(414 347)">
+                <circle class="cov-ring" r="14"/><circle class="cov-dot" r="7"/>
+                <text class="cov-label" y="-16" data-i18n="about.map.2">Пловдив</text><text class="cov-cc" y="26">BG</text>
+              </g>
+              <g class="cov-node" transform="translate(328 74)">
+                <circle class="cov-ring" r="14"/><circle class="cov-dot" r="7"/>
+                <text class="cov-label" y="-16" data-i18n="about.map.3">Крайова</text><text class="cov-cc" y="26">RO</text>
+              </g>
+              <g class="cov-node" transform="translate(154 200)">
+                <circle class="cov-ring" r="14"/><circle class="cov-dot" r="7"/>
+                <text class="cov-label" y="-16" data-i18n="about.map.4">Сърбия</text><text class="cov-cc" y="26">RS</text>
+              </g>
+              <text class="map-attr" x="538" y="452" text-anchor="end">© OpenStreetMap contributors</text>
+            </svg>
+            <p class="coverage-note" data-i18n="about.map.note">Общността и покритието се разрастват постоянно — присъединете се и към мрежата в вашия град.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(168,85,247,0.15);color:#a855f7">&#x26A1;</div>
-      <h3>Ниска консумация</h3>
-      <p>Оптимизираното енергопотребление позволява на батериите да издържат над седмица с едно зареждане.</p>
+  </section>
+
+  <!-- ═══════════════ How to start ═══════════════ -->
+  <section class="section" id="start">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow" data-i18n="start.eyebrow">Първи стъпки</p>
+        <h2 data-i18n="start.title">Как да започнете</h2>
+        <p class="section-sub" data-i18n="start.sub">Изтеглете приложението, вземете устройство, започнете да комуникирате!</p>
+      </div>
+      <ol class="steps">
+        <li class="step reveal">
+          <div class="step-num"><span>1</span></div>
+          <div class="card step-card">
+            <div class="step-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+            <h3 data-i18n="start.1.t">Изтеглете приложението</h3>
+            <p data-i18n="start.1.d">Инсталирайте MeshCore на телефона или компютъра си. Запазете офлайн копие, готово за употреба, когато интернет не е наличен.</p>
+            <a class="text-link" href="https://app.meshcore.nz" target="_blank" rel="noopener"><span data-i18n="start.1.l">Към изтеглянията</span><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          </div>
+        </li>
+        <li class="step reveal">
+          <div class="step-num"><span>2</span></div>
+          <div class="card step-card">
+            <div class="step-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></div>
+            <h3 data-i18n="start.2.t">Вземете устройство</h3>
+            <p data-i18n-html="start.2.d">Изберете поддържано LoRa устройство. Всеки потребител се нуждае от <em>Companion Node</em>, за да се свърже с mesh мрежата.</p>
+            <a class="text-link" href="https://meshcore.io/flasher" target="_blank" rel="noopener"><span data-i18n="start.2.l">Вижте устройствата</span><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          </div>
+        </li>
+        <li class="step reveal">
+          <div class="step-num"><span>3</span></div>
+          <div class="card step-card">
+            <div class="step-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+            <h3 data-i18n="start.3.t">Флашнете и се свържете</h3>
+            <p data-i18n="start.3.d">Използвайте Web Flasher-а, за да инсталирате MeshCore фърмуера. Сдвоете телефона си с устройството и започнете да чатите.</p>
+            <a class="text-link" href="https://meshcore.io/flasher" target="_blank" rel="noopener"><span data-i18n="start.3.l">Стартирайте Flasher</span><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          </div>
+        </li>
+      </ol>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(56,189,248,0.15);color:var(--primary-blue)">&#x1F4AC;</div>
-      <h3>Публични канали</h3>
-      <p>Присъединете се към публични групови канали и обсъждайте интересни теми с mesh общността.</p>
+  </section>
+
+  <!-- ═══════════════ Setup ═══════════════ -->
+  <section class="section section-alt" id="setup">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow" data-i18n="setup.eyebrow">Конфигурация</p>
+        <h2 data-i18n="setup.title">Настройки на мрежата</h2>
+        <p class="section-sub" data-i18n="setup.sub">Конфигурация за свързване към MeshCore България</p>
+      </div>
+
+      <div class="callout callout-warn reveal" role="note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <p data-i18n="setup.warn">Важно: моля, настройте репитрите и клиентите си да ползват 2-байтов хеш (<code>set path.hash.mode 1</code>) и региони.</p>
+      </div>
+
+      <div class="card tabs-card reveal">
+        <div class="tabs" role="tablist" aria-label="Тип устройство" data-i18n-aria="setup.tabs.aria">
+          <button class="tab is-active" id="tab-clients" role="tab" aria-selected="true" aria-controls="panel-clients" type="button" data-i18n="setup.tab.clients">Клиенти (Companion)</button>
+          <button class="tab" id="tab-repeaters" role="tab" aria-selected="false" aria-controls="panel-repeaters" type="button" data-i18n="setup.tab.repeaters">Репитри (Repeater)</button>
+        </div>
+
+        <div class="tab-panel is-active" id="panel-clients" role="tabpanel" aria-labelledby="tab-clients">
+          <p class="preset-note">
+            <span class="chip chip-accent" data-i18n="setup.preset">Preset</span>
+            <strong>EU/UK (Narrow), Switzerland</strong>
+          </p>
+          <div class="grid grid-4 params-grid">
+            <div class="param"><span class="param-label" data-i18n="setup.freq">Честота</span><code>869.618 <small>MHz</small></code></div>
+            <div class="param"><span class="param-label" data-i18n="setup.bw">Bandwidth</span><code>62.5 <small>kHz</small></code></div>
+            <div class="param"><span class="param-label" data-i18n="setup.sf">Spreading factor</span><code>8</code></div>
+            <div class="param"><span class="param-label" data-i18n="setup.cr">Coding rate</span><code>8</code></div>
+          </div>
+          <p class="panel-note" data-i18n="setup.clients.note">Тези настройки са вградени в preset-а — изберете <em>EU/UK (Narrow)</em> в приложението и сте готови.</p>
+        </div>
+
+        <div class="tab-panel" id="panel-repeaters" role="tabpanel" aria-labelledby="tab-repeaters" hidden>
+          <p class="preset-note">
+            <span class="chip chip-accent" data-i18n="setup.preset">Preset</span>
+            <strong>EU/UK (Narrow), Switzerland</strong>
+          </p>
+          <p class="panel-note" data-i18n-html="setup.rep.note">С цел оптимизация на мрежата е желателно да зададете и следните настройки. Advert intervals: <strong>Zero hop: 0</strong> (disabled) · <strong>Flood: 24h</strong>.</p>
+          <div class="cmd-list">
+            <div class="cmd">
+              <div class="cmd-main">
+                <code>set path.hash.mode 1</code>
+                <button class="copy-btn" type="button" aria-label="Копирай командата" data-i18n-aria="a11y.copy"><svg class="ic-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic-check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></button>
+              </div>
+              <p data-i18n="setup.cmd1">Позволява на репитъра да използва 2-байтови хешове за пътищата — по-кратки пути и по-добра производителност в по-големи мрежи.</p>
+            </div>
+            <div class="cmd">
+              <div class="cmd-main">
+                <code>set loop.detect minimal</code>
+                <button class="copy-btn" type="button" aria-label="Копирай командата" data-i18n-aria="a11y.copy"><svg class="ic-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic-check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></button>
+              </div>
+              <p data-i18n="setup.cmd2">Минимална детекция на цикли — предотвратява routing-loops с минимален overhead. Особено полезно в големи мрежи.</p>
+            </div>
+            <div class="cmd">
+              <div class="cmd-main">
+                <code>powersaving on</code>
+                <button class="copy-btn" type="button" aria-label="Копирай командата" data-i18n-aria="a11y.copy"><svg class="ic-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic-check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></button>
+              </div>
+              <p data-i18n-html="setup.cmd3">Полезно за батерийни репитри. Включено по подразбиране при Powersaving фърмуера. <strong>Използвайте с внимание — може да доведе до проблеми!</strong></p>
+            </div>
+          </div>
+          <div class="cmd-block">
+            <div class="cmd-block-head">
+              <span data-i18n="setup.region.title">Добавяне на регион <code>bg</code> (за репитър)</span>
+              <button class="copy-btn" type="button" aria-label="Копирай командите" data-i18n-aria="a11y.copy"><svg class="ic-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic-check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></button>
+            </div>
+            <pre><code>region put bg
+region save</code></pre>
+            <p class="cmd-block-note" data-i18n-html="setup.region.note"><code>region put bg</code> — добавя регион bg · <code>region save</code> — запаметява настройките за добавения регион.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(74,222,128,0.15);color:var(--accent-green)">&#x1F6E1;</div>
-      <h3>Частни канали</h3>
-      <p>Създайте частни криптирани групови канали за сигурно общуване с приятели и семейство.</p>
+  </section>
+
+  <!-- ═══════════════ Channels ═══════════════ -->
+  <section class="section" id="channels">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow" data-i18n="channels.eyebrow">Общуване</p>
+        <h2 data-i18n="channels.title">Публични канали</h2>
+        <p class="section-sub" data-i18n-html="channels.sub">Освен default канала <code>Public</code> (без регион), използваме и следните публични канали:</p>
+      </div>
+
+      <div class="filter-bar reveal" role="group" aria-label="Филтрирай каналите по регион" data-i18n-aria="channels.filter.aria">
+        <button class="filter-chip is-active" data-filter="all" type="button" data-i18n="channels.f.all">Всички</button>
+        <button class="filter-chip" data-filter="bg" type="button">bg 🇧🇬</button>
+        <button class="filter-chip" data-filter="ro" type="button">ro 🇷🇴</button>
+        <button class="filter-chip" data-filter="none" type="button" data-i18n="channels.f.none">Без регион</button>
+      </div>
+
+      <div class="grid grid-3 channels-grid" id="channels-grid">
+        <article class="card channel reveal" data-region="bg">
+          <div class="channel-top"><code class="ch-name">#bulgaria</code><span class="chip chip-bg">bg</span></div>
+          <p data-i18n="ch.bulgaria">Канал за България</p>
+        </article>
+        <article class="card channel reveal" data-region="bg">
+          <div class="channel-top"><code class="ch-name">#sofia</code><span class="chip chip-bg">bg</span></div>
+          <p data-i18n-html="ch.sofia">Канал за гр. <strong>София</strong></p>
+        </article>
+        <article class="card channel reveal" data-region="bg">
+          <div class="channel-top"><code class="ch-name">#plovdiv</code><span class="chip chip-bg">bg</span></div>
+          <p data-i18n-html="ch.plovdiv">Канал за гр. <strong>Пловдив</strong></p>
+        </article>
+        <article class="card channel reveal" data-region="bg">
+          <div class="channel-top"><code class="ch-name">#vratsa</code><span class="chip chip-bg">bg</span></div>
+          <p data-i18n-html="ch.vratsa">Канал за гр. <strong>Враца</strong></p>
+        </article>
+        <article class="card channel reveal" data-region="none">
+          <div class="channel-top"><code class="ch-name">#emergency</code><span class="chip chip-none" data-i18n="ch.none">без регион</span></div>
+          <p data-i18n="ch.emergency">Само за извънредни ситуации</p>
+        </article>
+        <article class="card channel reveal" data-region="none">
+          <div class="channel-top"><code class="ch-name">#dx</code><span class="chip chip-none" data-i18n="ch.none">без регион</span></div>
+          <p data-i18n="ch.dx">Канал за далечни връзки и тестове</p>
+        </article>
+        <article class="card channel reveal" data-region="bg">
+          <div class="channel-top"><code class="ch-name">#hacktheplanet</code><span class="chip chip-bg">bg</span></div>
+          <p data-i18n="ch.hack">Инженерни дискусии :)</p>
+        </article>
+        <article class="card channel reveal" data-region="none">
+          <div class="channel-top"><code class="ch-name">#hamradio</code><span class="chip chip-none" data-i18n="ch.none">без регион</span></div>
+          <p data-i18n="ch.ham">Радио любителски дискусии</p>
+        </article>
+        <article class="card channel reveal" data-region="bg">
+          <div class="channel-top"><code class="ch-name">#lzham</code><span class="chip chip-bg">bg</span></div>
+          <p data-i18n="ch.lzham">Канал за български радио любители</p>
+        </article>
+        <article class="card channel reveal" data-region="none">
+          <div class="channel-top"><code class="ch-name">#test</code><span class="chip chip-none" data-i18n="ch.none">без регион</span></div>
+          <p data-i18n="ch.test">Канал за тестове</p>
+        </article>
+        <article class="card channel reveal" data-region="bg">
+          <div class="channel-top"><code class="ch-name">#bot</code><span class="chip chip-bg">bg</span></div>
+          <p data-i18n-html="ch.bot">Канал с бот, който отговаря на <a href="https://github.com/agessaman/meshcore-bot/blob/main/docs/command-reference.md" target="_blank" rel="noopener">следните команди</a></p>
+        </article>
+        <article class="card channel reveal" data-region="bg">
+          <div class="channel-top"><code class="ch-name">#plovdivbot</code><span class="chip chip-bg">bg</span></div>
+          <p data-i18n-html="ch.plovdivbot">Канал с бот за гр. <strong>Пловдив</strong></p>
+        </article>
+        <article class="card channel reveal" data-region="ro">
+          <div class="channel-top"><code class="ch-name">#romania</code><span class="chip chip-ro">ro</span></div>
+          <p data-i18n="ch.romania">Канал за Румъния</p>
+        </article>
+        <article class="card channel reveal" data-region="ro">
+          <div class="channel-top"><code class="ch-name">#craiova-bot</code><span class="chip chip-ro">ro</span></div>
+          <p data-i18n="ch.craiova">Бот за Крайова</p>
+        </article>
+        <article class="card channel reveal" data-region="none">
+          <div class="channel-top"><code class="ch-name">#serbia</code><span class="chip chip-none" data-i18n="ch.none">без регион</span></div>
+          <p data-i18n="ch.serbia">Канал за Сърбия</p>
+        </article>
+      </div>
+
+      <div class="card howto reveal">
+        <h3>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span data-i18n="ch.howto.title">Как да добавите регион (scope) към канал в клиентското приложение</span>
+        </h3>
+        <p class="howto-sub" data-i18n="ch.howto.sub">За да ограничите разпространението на съобщенията в даден канал само до определен регион:</p>
+        <ol class="howto-steps">
+          <li data-i18n-html="ch.howto.1">Изберете канала, който искате да редактирате (например <code>#bulgaria</code>) и го отворете</li>
+          <li data-i18n-html="ch.howto.2">Натиснете трите точки горе вдясно и изберете <em>Set Region Scope</em></li>
+          <li data-i18n-html="ch.howto.3">Натиснете <em>+</em> горе вдясно, въведете името на региона и потвърдете</li>
+          <li data-i18n="ch.howto.4">Ако вече имате въведен регион, просто го изберете</li>
+        </ol>
+        <p class="howto-note" data-i18n="ch.howto.note">След като зададете scope, съобщенията в този канал ще бъдат тагнати с региона и ще се разпространяват само през рипиитъри, които имат съответния регион в списъка си.</p>
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(251,159,0,0.15);color:var(--banner-gold)">&#x2600;&#xFE0F;</div>
-      <h3>Слънчеви ретранслатори</h3>
-      <p>Разширете обхвата на вашата MeshCore мрежа със слънчеви ретранслатори на високи места.</p>
+  </section>
+
+  <!-- ═══════════════ Regions ═══════════════ -->
+  <section class="section section-alt" id="regions">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow" data-i18n="regions.eyebrow">Маршрутизиране</p>
+        <h2 data-i18n="regions.title">Региони</h2>
+        <p class="section-sub" data-i18n="regions.sub">Как работят регионите в MeshCore и защо са важни</p>
+      </div>
+
+      <div class="regions-intro">
+        <div class="card region-card reveal">
+          <h3><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span data-i18n="regions.what.t">Какво представляват регионите?</span></h3>
+          <p data-i18n="regions.what.p1">Регионите са механизъм в MeshCore, който позволява на рипиитърите да филтрират трафика на базата на географски тагове. Всеки рипиитър може да бъде конфигуриран с един или повече региони, които определят какъв трафик ще препредава.</p>
+          <p data-i18n-html="regions.what.p2">Когато даден рипиитър получи съобщение, то носи таг на региона, от който идва (например <code>bg</code> за България, <code>ro</code> за Румъния, <code>rs</code> за Сърбия). Рипиитърът проверява дали този таг съвпада с някой от конфигурираните му региони и решава дали да препредаде съобщението.</p>
+        </div>
+        <div class="card region-card reveal">
+          <h3><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span data-i18n="regions.why.t">За какво се използват регионите?</span></h3>
+          <p data-i18n="regions.why.intro">Регионите решават няколко важни проблема в mesh мрежите:</p>
+          <ul class="benefit-list">
+            <li><strong data-i18n="regions.why.1.t">Намаляване на ненужния трафик</strong><span data-i18n="regions.why.1.d">без региони всяко съобщение се разпространява из цялата мрежа, дори до рипиитъри на стотици километри — това претоварва мрежата.</span></li>
+            <li><strong data-i18n="regions.why.2.t">Подобряване на маршрутизирането</strong><span data-i18n="regions.why.2.d">регионите помагат на рипиитърите да взимат по-интелигентни решения къде да препратят трафика.</span></li>
+            <li><strong data-i18n="regions.why.3.t">Логическо сегментиране</strong><span data-i18n="regions.why.3.d">големите mesh мрежи могат да се разделят на по-малки, управляеми сегменти по географски принцип.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout callout-star reveal">
+        <div class="star-glyph" aria-hidden="true">*</div>
+        <div>
+          <h3 data-i18n-html="regions.star.t">Специалният регион <code>*</code> (звезда)</h3>
+          <p data-i18n-html="regions.star.p">Регионът <code>*</code> означава „всички региони“. Рипиитър с настроен <code>*</code> ще препредава трафик от и към всеки регион. Това е особено важно за:</p>
+          <ul>
+            <li data-i18n="regions.star.1">трафик, който не е тагнат с конкретен регион (глобален/public трафик);</li>
+            <li data-i18n="regions.star.2">рипиитъри, които са на границата между няколко региона;</li>
+            <li data-i18n="regions.star.3">поддържане на свързаност между различните регионални мрежи.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="regions-h3 reveal" data-i18n="regions.examples.t">Примери за конфигурация</h3>
+      <div class="grid grid-2">
+        <article class="card example reveal">
+          <div class="example-head">
+            <h4 data-i18n="regions.ex1.t">Рипиитър само за България</h4>
+            <div class="chips"><span class="chip chip-star">*</span><span class="chip chip-bg">bg</span></div>
+          </div>
+          <ul class="route-list">
+            <li class="route ok"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n-html="regions.ex1.1">Препредава <strong>целия глобален трафик</strong> (благодарение на <code>*</code>)</span></li>
+            <li class="route ok"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n-html="regions.ex1.2">Препредава трафик тагнат с <code>bg</code></span></li>
+            <li class="route no"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span data-i18n-html="regions.ex1.3"><strong>Филтрира</strong> (не препредава) трафик тагнат с <code>ro</code> или <code>rs</code>, тъй като тези региони не са в списъка му</span></li>
+          </ul>
+          <p class="example-note" data-i18n-html="regions.ex1.note">Ако рипиитър в Румъния изпрати съобщение тагнато с <code>ro</code>, български рипиитър с <code>* bg</code> няма да го препредаде. Румънският локален трафик си остава в Румъния и не претоварва българската мрежа.</p>
+        </article>
+        <article class="card example reveal">
+          <div class="example-head">
+            <h4 data-i18n="regions.ex2.t">Граничен рипиитър</h4>
+            <div class="chips"><span class="chip chip-star">*</span><span class="chip chip-bg">bg</span><span class="chip chip-ro">ro</span><span class="chip chip-rs">rs</span></div>
+          </div>
+          <ul class="route-list">
+            <li class="route ok"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n-html="regions.ex2.1">Препредава глобален трафик (<code>*</code>)</span></li>
+            <li class="route ok"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n-html="regions.ex2.2">Препредава трафик от/към България (<code>bg</code>)</span></li>
+            <li class="route ok"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n-html="regions.ex2.3">Препредава трафик от/към Румъния (<code>ro</code>)</span></li>
+            <li class="route ok"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n-html="regions.ex2.4">Препредава трафик от/към Сърбия (<code>rs</code>)</span></li>
+          </ul>
+          <p class="example-note" data-i18n="regions.ex2.note">Граничните рипиитъри са критични за междурегионалната свързаност — те действат като „мост“ между националните мрежи и позволяват на съобщения да преминават границите, когато е необходимо.</p>
+        </article>
+      </div>
+
+      <div class="callout callout-warn reveal" role="note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div>
+          <h3 data-i18n-html="regions.bad.t">Защо премахването на <code>*</code> е лоша идея?</h3>
+          <p data-i18n-html="regions.bad.intro">Може да си помислите, че ако сте в България, ви трябва само <code>bg</code>. Но премахването на <code>*</code> има сериозни последствия:</p>
+          <ul class="bad-list">
+            <li><strong data-i18n="regions.bad.1.t">Губите глобалния/public трафик</strong><span data-i18n="regions.bad.1.d">много съобщения (особено в public канала) не са тагнати с конкретен регион — без <code>*</code> вашият рипиитър няма да ги препредава и ще се изолирате от голяма част от мрежата.</span></li>
+            <li><strong data-i18n="regions.bad.2.t">Прекъсвате свързаността</strong><span data-i18n="regions.bad.2.d">ако всички рипиитъри в даден регион махнат <code>*</code>, мрежата се фрагментира и комуникацията между регионите спира напълно.</span></li>
+            <li><strong data-i18n="regions.bad.3.t">Изолирате нови потребители</strong><span data-i18n="regions.bad.3.d">нови устройства, които все още нямат конфигуриран регион, няма да могат да комуникират през вашия рипиитър.</span></li>
+            <li><strong data-i18n="regions.bad.4.t">Спешни съобщения (emergency)</strong><span data-i18n="regions.bad.4.d">emergency каналът често е без регион, за да достигне максимален брой хора. Без <code>*</code> няма да получавате тези критични съобщения.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid grid-2 regions-rec">
+        <div class="card region-rec reveal">
+          <h3><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="regions.rec.t">Препоръчителна конфигурация</span></h3>
+          <p data-i18n-html="regions.rec.p1">За повечето рипиитъри в България препоръчителната конфигурация е <code>* bg</code>:</p>
+          <ul>
+            <li data-i18n-html="regions.rec.1"><code>*</code> — за глобален трафик и съобщения без регион;</li>
+            <li data-i18n-html="regions.rec.2"><code>bg</code> — за регионален трафик в България.</li>
+          </ul>
+          <p data-i18n-html="regions.rec.p2">За гранични рипиитъри (близо до Румъния или Сърбия): <code>* bg ro rs</code>. За други държави — заменете <code>bg</code> с кода на държавата и добавете съседни региони, ако сте на граница.</p>
+        </div>
+        <div class="card region-rec reveal">
+          <h3><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg><span data-i18n="regions.cmd.t">Команди за настройка</span></h3>
+          <p data-i18n="regions.cmd.p">От командния ред на рипиитъра:</p>
+          <div class="cmd-list cmd-list-tight">
+            <div class="cmd"><div class="cmd-main"><code>region put bg</code><button class="copy-btn" type="button" aria-label="Копирай командата" data-i18n-aria="a11y.copy"><svg class="ic-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic-check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></button></div><p data-i18n="regions.cmd.1">добавя регион bg</p></div>
+            <div class="cmd"><div class="cmd-main"><code>region put *</code><button class="copy-btn" type="button" aria-label="Копирай командата" data-i18n-aria="a11y.copy"><svg class="ic-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic-check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></button></div><p data-i18n="regions.cmd.2">добавя глобален регион (всички)</p></div>
+            <div class="cmd"><div class="cmd-main"><code>region del rg</code><button class="copy-btn" type="button" aria-label="Копирай командата" data-i18n-aria="a11y.copy"><svg class="ic-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic-check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></button></div><p data-i18n="regions.cmd.3">премахва регион (заменете rg с името на региона)</p></div>
+            <div class="cmd"><div class="cmd-main"><code>region list</code><button class="copy-btn" type="button" aria-label="Копирай командата" data-i18n-aria="a11y.copy"><svg class="ic-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic-check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></button></div><p data-i18n="regions.cmd.4">показва списък с текущите региони</p></div>
+            <div class="cmd"><div class="cmd-main"><code>region save</code><button class="copy-btn" type="button" aria-label="Копирай командата" data-i18n-aria="a11y.copy"><svg class="ic-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic-check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></button></div><p data-i18n="regions.cmd.5">запазва настройките</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="regions-cta reveal">
+        <a class="btn btn-outline" href="https://regions.meshcore.nz/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span data-i18n="regions.cta">Вижте актуалната карта на регионите</span>
+        </a>
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(168,85,247,0.15);color:#a855f7">&#x1F4F1;</div>
-      <h3>MeshCore App</h3>
-      <p>Изтеглете нашето безплатно приложение за Android, iOS, Windows, Mac, Linux и Web.</p>
+  </section>
+
+  <!-- ═══════════════ Links ═══════════════ -->
+  <section class="section" id="links">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow" data-i18n="links.eyebrow">Ресурси</p>
+        <h2 data-i18n="links.title">Полезни връзки</h2>
+        <p class="section-sub" data-i18n="links.sub">Ресурси за MeshCore общността</p>
+      </div>
+
+      <div class="links-group reveal">
+        <h3 data-i18n="links.g1">Общност</h3>
+        <div class="grid grid-3">
+          <a class="card link-card" href="https://www.facebook.com/groups/1555471979162054" target="_blank" rel="noopener">
+            <span class="link-icon"><img src="assets/icons/facebook.png" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">Meshcore Bulgaria Facebook group</span>
+              <span class="link-desc" data-i18n="links.1.d">Групата на българската общност във Facebook</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="card link-card" href="https://www.reddit.com/r/meshcore_bulgaria/" target="_blank" rel="noopener">
+            <span class="link-icon"><img src="assets/icons/reddit.png" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">Meshcore Bulgaria on Reddit</span>
+              <span class="link-desc" data-i18n="links.2.d">r/meshcore_bulgaria — дискусии и въпроси</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="card link-card" href="https://github.com/kekelback/meshcore-bulgaria-site/" target="_blank" rel="noopener">
+            <span class="link-icon"><img src="assets/icons/github.png" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">meshcore.bg on GitHub</span>
+              <span class="link-desc" data-i18n="links.3.d">Кодът на този сайт</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="links-group reveal">
+        <h3 data-i18n="links.g2">Официални</h3>
+        <div class="grid grid-3">
+          <a class="card link-card" href="https://meshcore.io" target="_blank" rel="noopener">
+            <span class="link-icon dark"><img src="assets/icons/meshcore.png" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">Meshcore Official Website</span>
+              <span class="link-desc" data-i18n="links.4.d">Официалният сайт на MeshCore</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="card link-card" href="https://app.meshcore.io" target="_blank" rel="noopener">
+            <span class="link-icon dark"><img src="assets/icons/app.png?v=2" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">Meshcore Web App</span>
+              <span class="link-desc" data-i18n="links.5.d">Приложението директно в браузъра</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="card link-card" href="https://docs.meshcore.io" target="_blank" rel="noopener">
+            <span class="link-icon"><img src="assets/icons/docs.png" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">Docs</span>
+              <span class="link-desc" data-i18n="links.6.d">Официална документация</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="card link-card" href="https://blog.meshcore.io" target="_blank" rel="noopener">
+            <span class="link-icon dark"><img src="assets/icons/blog.png" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">Blog</span>
+              <span class="link-desc" data-i18n="links.7.d">Новини и статии от екипа</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="card link-card" href="https://meshcore.io/flasher" target="_blank" rel="noopener">
+            <span class="link-icon dark"><img src="assets/icons/meshcore.png" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">Web Flasher</span>
+              <span class="link-desc" data-i18n="links.8.d">Флашване на фърмуер от браузъра</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="card link-card" href="https://map.meshcore.io" target="_blank" rel="noopener">
+            <span class="link-icon dark"><img src="assets/icons/map.png" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">Map</span>
+              <span class="link-desc" data-i18n="links.9.d">Карта на нодове и репитри</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="links-group reveal">
+        <h3 data-i18n="links.g3">Инструменти</h3>
+        <div class="grid grid-3">
+          <a class="card link-card" href="https://bg.meshmapper.net/" target="_blank" rel="noopener">
+            <span class="link-icon"><img src="assets/icons/meshmapper.png" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">MeshMapper</span>
+              <span class="link-desc" data-i18n="links.10.d">Карта на меша и wardriving</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="card link-card" href="https://corescope.malinovi.com/" target="_blank" rel="noopener">
+            <span class="link-icon"><img src="assets/icons/corescope.png" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">CoreScope анализатор</span>
+              <span class="link-desc" data-i18n="links.11.d">Анализ на трафика в меша</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="card link-card" href="https://trace.meshcore.bg" target="_blank" rel="noopener">
+            <span class="link-icon dark"><img src="assets/icons/trace.png" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">Line of sight calculator</span>
+              <span class="link-desc" data-i18n="links.12.d">Пресмятане на директна видимост между точки</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="card link-card" href="https://regions.meshcore.nz/" target="_blank" rel="noopener">
+            <span class="link-icon dark"><img src="assets/icons/regions.png" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">MeshCore Regions map</span>
+              <span class="link-desc" data-i18n="links.13.d">Актуална карта на регионите</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="card link-card" href="https://pic.meshcore.bg" target="_blank" rel="noopener">
+            <span class="link-icon dark"><img src="assets/icons/pic.png" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">Image hosting</span>
+              <span class="link-desc" data-i18n="links.14.d">pic.meshcore.bg — хостинг за изображения</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="card link-card" href="https://github.com/IoTThinks/EasySkyMesh/releases" target="_blank" rel="noopener">
+            <span class="link-icon"><img src="assets/icons/github.png" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">Easy SkyMesh Firmware</span>
+              <span class="link-desc" data-i18n="links.15.d">Powersaving фърмуер за репитри и companion-и</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="card link-card" href="https://www.weyhmueller.org/webtools/esp32_ssid_patcher.html" target="_blank" rel="noopener">
+            <span class="link-icon"><img src="assets/icons/patcher.png" alt="" loading="lazy" width="32" height="32"></span>
+            <span class="link-body">
+              <span class="link-name">Firmware Patcher</span>
+              <span class="link-desc" data-i18n="links.16.d">Пач за WiFi-Companion фърмуер</span>
+            </span>
+            <svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+  </section>
+</main>
 
-<!-- About -->
-<div class="section" id="about">
-  <h2>За нас</h2>
-  <p class="section-subtitle">Meshcore България — общност за независима off-grid комуникация</p>
-  <div class="content-section" style="padding-top:0">
-    <p>Meshcore България е общност от хора, обединени от идеята за независима и децентрализирана offgrid комуникация.</p>
-    <p>Към този момент имаме свързани мешове в София и Пловдив, както и на други места, като общността и покритието се разрастват постоянно. Също така имаме постоянна връзка с Крайова и още няколко града в Румъния, както и с няколко локации в Сърбия — единствено по радио.</p>
-    <p>Тук можете да намерите информация как да участвате в мрежата.</p>
-  </div>
-</div>
-
-<!-- How to Get Started -->
-<div class="section">
-  <h2>Как да започнете</h2>
-  <p class="section-subtitle">Изтеглете приложението, вземете устройство, започнете да комуникирате!</p>
-  <div class="steps">
-    <div class="step">
-      <div class="step-number">1</div>
-      <h3>Изтеглете приложението</h3>
-      <p>Инсталирайте MeshCore на телефона или компютъра си. Запазете офлайн копие, готово за употреба, когато интернет не е наличен.</p>
-      <a href="https://app.meshcore.nz" target="_blank" rel="noopener" class="step-link">Към изтеглянията &rarr;</a>
-    </div>
-    <div class="step">
-      <div class="step-number">2</div>
-      <h3>Вземете устройство</h3>
-      <p>Изберете поддържано LoRa устройство. Всеки потребител се нуждае от "Companion Node", за да се свърже с mesh мрежата.</p>
-      <a href="https://meshcore.io/flasher" target="_blank" rel="noopener" class="step-link">Вижте устройствата &rarr;</a>
-    </div>
-    <div class="step">
-      <div class="step-number">3</div>
-      <h3>Флашнете и се свържете</h3>
-      <p>Използвайте Web Flasher-а, за да инсталирате MeshCore фърмуера. Сдвоете телефона си с устройството и започнете да чатите.</p>
-      <a href="https://meshcore.io/flasher" target="_blank" rel="noopener" class="step-link">Стартирайте Flasher &rarr;</a>
-    </div>
-  </div>
-</div>
-
-<!-- Setup -->
-<div class="section" id="setup">
-  <h2>Настройки на мрежата</h2>
-  <p class="section-subtitle">Конфигурация за свързване към MeshCore България</p>
-  <div class="content-section" style="padding-top:0">
-    <p><strong>Настройки за клиенти (companion firmware)</strong></strong></p>
-    <p>Използваният preset e <strong>EU/UK (Narrow), Switzerland</strong></p>
-    <p>Frequency: <code>869.618</code><br>
-    Bandwidth: <code>62.5kHz</code><br>
-    Spreading factor: <code>8</code><br>
-    Coding rate: <code>8</code></p>
-    <br>
-    <br>
-    <p><strong>Настройки за репитри (repeater firmware)</strong></strong></p>
-    <p>Използваният preset също e <strong>EU/UK (Narrow), Switzerland</strong></p>
-    <p>Освен това с цел оптимизация на мрежата, е желателно да зададете следните настройки:</p>
-    <p>Advert intervals: <code>Zero hop: 0 (disabled) ; Flood: 24h</code><br>
-      From command line:<br>
-      <code>set path.hash.mode 1</code> - Allow the repeater to use 2-byte hashes for paths, which can reduce path lengths and improve performance in larger networks<br>
-      <code>set loop.detect minimal</code> - Enable minimal loop detection to prevent routing loops while minimizing overhead. This is especially beneficial in larger networks where loops can cause significant issues<br>
-      <code>powersaving on</code> - Beneficial for battery powered repeaters. This is on by default if you are already using the Powersaving firmware. Use with caution, may cause issues! <br>
-      <br>
-      <strong>Добавяне на регион bg (за рипиитър)</strong><br>
-      <code>region put bg</code> - добавя регион bg<br>
-       <code>region save</code> - запаметява настройките за добавения регион<br>
-       <br>
-
-   </div>
-</div>
-
-<!-- Channels -->
-<div class="section" id="channels">
-  <h2>Публични канали</h2>
-  <p class="section-subtitle">Присъединете се към разговора</p>
-  <div class="content-section" style="padding-top:0">
-     <p>Освен default канала <strong>Public</strong> (без регион), използваме и следните публични канали:</p>
-       <p><strong>#bulgaria</strong><br>Канал за България (регион bg)</p>
-       <p><strong>#sofia</strong><br>Канал за гр. София (регион bg)</p>
-        <p><strong>#plovdiv</strong><br>Канал за гр. Пловдив (регион bg)</p>
-        <p><strong>#vratsa</strong><br>Канал за гр. Враца (регион bg)</p>
-      <p><strong>#emergency</strong><br>Само за извънредни ситуации (без регион)</p>
-       <p><strong>#dx</strong><br>Канал за далечни връзки и тестове (без регион)</p>
-     <p><strong>#hacktheplanet</strong><br>Инженерни дискусии :) (регион bg)</p>
-     <p><strong>#hamradio</strong><br>Радио любителски дискусии (без регион)</p>
-     <p><strong>#lzham</strong><br>Канал за български радио любители (регион bg)</p>
-       <p><strong>#test</strong><br>Канал за тестове (без регион)</p>
-       <p><strong>#bot</strong><br>Канал с бот, който отговаря на <a href="https://github.com/agessaman/meshcore-bot/blob/main/docs/command-reference.md" target="_blank" rel="noopener noreferrer">следните команди</a> (регион bg)</p>
-        <p><strong>#plovdivbot</strong><br>Канал с бот за гр. Пловдив (регион bg)</p>
-        <p><strong>#romania</strong><br>Канал за Румъния (регион ro)</p>
-        <p><strong>#craiova-bot</strong><br>Бот за Крайова (регион ro)</p>
-        <p><strong>#serbia</strong><br>Канал за Сърбия (без регион)</p>
-     <h3>Как да добавите регион (scope) към канал в клиентското приложение</h3>
-     <p>За да ограничите разпространението на съобщенията в даден канал само до определен регион:</p>
-     <ol>
-       <li>Изберете канала, който искате да редактирате (например <code>#bulgaria</code>) и го отворете</li>
-       <li>Натиснете 3-те точки горе вдясно и изберете <strong>Set Region Scope</strong></li>
-       <li>Натиснете <strong>+</strong> горе вдясно и въведете името на региона, след което потвърдете</li>
-       <li>Ако вече имате въведен регион, просто го изберете</li>
-     </ol>
-     <p>След като зададете scope, съобщенията в този канал ще бъдат тагнати с региона и ще се разпространяват само през рипиитъри, които имат съответния регион в списъка си.</p>
-   </div>
-</div>
-
-<!-- Региони -->
-<div class="section" id="regions">
-  <h2>Региони</h2>
-  <p class="section-subtitle">Как работят регионите в MeshCore и защо са важни</p>
-  <div class="content-section" style="padding-top:0">
-    <h3>Какво представляват регионите?</h3>
-    <p>Регионите са механизъм в MeshCore, който позволява на рипиитърите (repeater-ите) да филтрират трафика на базата на географски тагове. Всеки рипиитър може да бъде конфигуриран с един или повече региони, които определят какъв трафик ще препредава.</p>
-    <p>Когато даден рипиитър получи съобщение, то носи таг на региона, от който идва (например <code>bg</code> за България, <code>ro</code> за Румъния, <code>rs</code> за Сърбия). Рипиитърът проверява дали този таг съвпада с някой от конфигурираните му региони и решава дали да препредаде съобщението.</p>
-
-    <h3>За какво се използват регионите?</h3>
-    <p>Регионите решават няколко важни проблема в mesh мрежите:</p>
-    <ul>
-      <li><strong>Намаляване на ненужния трафик</strong> — без региони, всяко съобщение се разпространява из цялата мрежа, дори до рипиитъри, които са на стотици километри и нямат връзка с подателя или получателя. Това претоварва мрежата.</li>
-      <li><strong>Подобряване на маршрутизирането</strong> — регионите помагат на рипиитърите да взимат по-интелигентни решения за това накъде да препратят трафика.</li>
-      <li><strong>Логическо сегментиране на мрежата</strong> — позволява големи mesh мрежи да бъдат разделени на по-малки, управляеми сегменти по географски принцип.</li>
-    </ul>
-
-    <h3>Специалният регион <code>*</code> (звезда)</h3>
-    <p>Регионът <code>*</code> означава "всички региони". Рипиитър с настроен <code>*</code> ще препредава трафик от и към всеки регион. Това е особено важно за:</p>
-    <ul>
-      <li>Трафик, който не е тагнат с конкретен регион (глобален/public трафик)</li>
-      <li>Рипиитъри, които са на границата между няколко региона</li>
-      <li>Поддържане на свързаност между различните регионални мрежи</li>
-    </ul>
-
-    <h3>Примери за конфигурация</h3>
-    <p><strong>Пример 1: Рипиитър само за България (<code>*</code> и <code>bg</code>)</strong></p>
-    <p>Рипиитър с региони <code>* bg</code>:</p>
-    <ul>
-      <li>Препредава целия глобален трафик (благодарение на <code>*</code>)</li>
-      <li>Препредава трафик тагнат с <code>bg</code></li>
-      <li><strong>Филтрира (НЕ препредава)</strong> трафик тагнат с <code>ro</code> или <code>rs</code>, тъй като тези региони не са в списъка му</li>
-    </ul>
-    <p>Това означава, че ако рипиитър в Румъния изпрати съобщение тагнато с <code>ro</code>, български рипиитър с <code>* bg</code> <strong>няма да го препредаде</strong>. Така румънският локален трафик си остава в Румъния и не претоварва българската мрежа.</p>
-
-    <p><strong>Пример 2: Граничен рипиитър (<code>* bg ro rs</code>)</strong></p>
-    <p>Рипиитър, който се намира на границата между България, Румъния и Сърбия, трябва да бъде конфигуриран с <code>* bg ro rs</code>:</p>
-    <ul>
-      <li>Препредава глобален трафик (<code>*</code>)</li>
-      <li>Препредава трафик от/към България (<code>bg</code>)</li>
-      <li>Препредава трафик от/към Румъния (<code>ro</code>)</li>
-      <li>Препредава трафик от/към Сърбия (<code>rs</code>)</li>
-    </ul>
-    <p>Граничните рипиитъри са критични за междурегионалната свързаност. Те действат като "мост" между различните национални мрежи, позволявайки на съобщения да преминават границите, когато е необходимо.</p>
-
-    <h3>Защо премахването на <code>*</code> е лоша идея?</h3>
-    <p>Може да си помислите, че ако сте в България, ви трябва само <code>bg</code>. Но премахването на <code>*</code> има сериозни последствия:</p>
-    <ul>
-      <li><strong>Губите глобалния/public трафик</strong> — много съобщения (особено в public канала) не са тагнати с конкретен регион. Без <code>*</code>, вашият рипиитър няма да ги препредава и ще се изолирате от голяма част от мрежата.</li>
-      <li><strong>Прекъсвате свързаността</strong> — ако всички рипиитъри в даден регион махнат <code>*</code>, мрежата се фрагментира и комуникацията между регионите спира напълно.</li>
-      <li><strong>Изолирате нови потребители</strong> — нови устройства, които все още нямат конфигуриран регион, няма да могат да комуникират през вашия рипиитър.</li>
-      <li><strong>Спешни съобщения (emergency)</strong> — emergency каналът често е без регион, за да достигне до максимален брой хора. Без <code>*</code> вие няма да получавате тези критични съобщения.</li>
-    </ul>
-
-    <h3>Препоръчителна конфигурация</h3>
-    <p>За повечето рипиитъри в България препоръчителната конфигурация е <code>* bg</code>:</p>
-    <ul>
-      <li><code>*</code> — за глобален трафик и съобщения без регион</li>
-      <li><code>bg</code> — за регионален трафик в България</li>
-    </ul>
-    <p>За гранични рипиитъри (близо до Румъния или Сърбия): <code>* bg ro rs</code></p>
-    <p>За рипиитъри в други държави — заменете <code>bg</code> със съответния код на държавата и добавете съседни региони ако сте на граница.</p>
-
-    <h3>Команди за настройка</h3>
-    <p>От командния ред на рипиитъра:</p>
-    <p><code>region put bg</code> — добавя регион bg<br>
-    <code>region put *</code> — добавя глобален регион (всички)<br>
-    <code>region del rg</code> — премахва регион (заменете rg с името на региона)<br>
-    <code>region list</code> — показва списък с текущите региони<br>
-    <code>region save</code> — запазва настройките</p>
-    <p><strong>За да настроите рипиитър с <code>* bg</code>:</strong></p>
-    <p><code>region put *</code><br>
-    <code>region put bg</code><br>
-    <code>region save</code></p>
-    <p>Вижте актуалната карта на регионите: <a href="https://regions.meshcore.nz/" target="_blank" rel="noopener noreferrer">regions.meshcore.nz</a></p>
-  </div>
-</div>
-
-<!-- Links -->
-<div class="section" id="links">
-  <h2>Полезни връзки</h2>
-  <p class="section-subtitle">Ресурси за MeshCore общността</p>
-  <div class="content-section" style="padding-top:0">
-    <ul>
-      <li><a href="https://www.facebook.com/groups/1555471979162054" target="_blank" rel="noopener noreferrer">Meshcore Bulgaria Facebook group</a></li>
-      <li><a href="https://www.reddit.com/r/meshcore_bulgaria/" target="_blank" rel="noopener noreferrer">Meshcore Bulgaria on Reddit</a></li>
-      <li><a href="https://meshcore.io" target="_blank" rel="noopener noreferrer">Meshcore Official Website</a></li>
-      <li><a href="https://app.meshcore.io" target="_blank" rel="noopener noreferrer">Meshcore Web App</a></li>
-      <li><a href="https://bg.meshmapper.net/" target="_blank" rel="noopener noreferrer">MeshMapper and wardriving</a></li>
-      <li><a href="https://github.com/IoTThinks/EasySkyMesh/releases" target="_blank" rel="noopener noreferrer">Easy SkyMesh Powersaving Firmware for repeaters and companions</a></li>
-      <li><a href="https://www.weyhmueller.org/webtools/esp32_ssid_patcher.html" target="_blank" rel="noopener noreferrer">MeshCore Firmware Patcher for WiFi-Companions</a></li>
-      <li><a href="https://github.com/kekelback/meshcore-bulgaria-site/" target="_blank" rel="noopener noreferrer">meshcore.bg on github</a></li>
-      <li><a href="https://pic.meshcore.bg" target="_blank" rel="noopener noreferrer">Image hosting (pic.meshcore.bg)</a></li>
-      <li><a href="https://trace.meshcore.bg" target="_blank" rel="noopener noreferrer">Line of sight calculation</a></li>
-      <li><a href="https://corescope.malinovi.com/" target="_blank" rel="noopener noreferrer">Corescope анализатор</a></li>
-      <li><a href="https://regions.meshcore.nz/" target="_blank" rel="noopener noreferrer">MeshCore Regions map</a></li>
-    </ul>
-  </div>
-</div>
-
-<!-- Footer -->
+<!-- ═══════════════ Footer ═══════════════ -->
 <footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-badges"></div>
-    <nav class="footer-nav">
-      <a href="https://meshcore.io">Home</a>
-      <a href="https://blog.meshcore.io">Blog</a>
-      <a href="https://docs.meshcore.io">Docs</a>
-      <a href="https://meshcore.io/flasher">Flasher</a>
-      <a href="https://map.meshcore.io">Map</a>
-    </nav>
-    <div class="social-icons">
-      <a href="https://facebook.com/groups/meshcore" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-      <a href="https://reddit.com/r/meshcore" target="_blank" rel="noopener" aria-label="Reddit"><i class="fab fa-reddit"></i></a>
-      <a href="https://meshcore.gg" target="_blank" rel="noopener" aria-label="Discord"><i class="fab fa-discord"></i></a>
-      <a href="https://mastodon.social/@meshcore" target="_blank" rel="noopener" aria-label="Mastodon"><i class="fab fa-mastodon"></i></a>
-      <a href="https://x.com/mesh_core" target="_blank" rel="noopener" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="#top" aria-label="Meshcore Bulgaria">
+        <img class="brand-mark" src="assets/meshcore-logo.png" alt="Лого на MeshCore" width="48" height="48">
+        <span class="brand-name" data-i18n="brand.sub">България</span>
+      </a>
+      <p data-i18n="footer.blurb">Общност за Meshcore мрежи в България — независима, off-grid комуникация за всеки.</p>
+      <div class="footer-social" aria-label="Социални мрежи" data-i18n-aria="hero.social.aria">
+        <a href="https://www.facebook.com/groups/1555471979162054" target="_blank" rel="noopener" aria-label="Facebook BG"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.09 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.7 4.53-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.61 23.09 24 18.1 24 12.07z"/></svg></a>
+        <a href="https://www.reddit.com/r/meshcore_bulgaria/" target="_blank" rel="noopener" aria-label="Reddit"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="14" r="7"/><circle cx="9.3" cy="13.5" r="1.15" fill="currentColor" stroke="none"/><circle cx="14.7" cy="13.5" r="1.15" fill="currentColor" stroke="none"/><path d="M12 7.2 13 3.4l2.8.9"/><circle cx="16.6" cy="4.1" r="1.2"/></svg></a>
+        <a href="https://discord.gg/d6dpjjSeF" target="_blank" rel="noopener" aria-label="Discord BG"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M18.6 5.3A15.3 15.3 0 0 0 14.9 4l-.2.4a13 13 0 0 1 3.3 1.6 11.5 11.5 0 0 0-9.9 0A13 13 0 0 1 11.3 4.4L11.1 4a15.3 15.3 0 0 0-3.7 1.3C4.9 9 4.2 12.6 4.5 16.2a15.6 15.6 0 0 0 4.7 2.4l.9-1.5a10 10 0 0 1-1.6-.8l.4-.3a11 11 0 0 0 9.4 0l.4.3c-.5.3-1 .6-1.6.8l.9 1.5a15.6 15.6 0 0 0 4.7-2.4c.4-4.2-.7-7.7-2.8-10.9zM9.7 14.1c-.9 0-1.6-.8-1.6-1.8s.7-1.8 1.6-1.8 1.6.8 1.6 1.8-.7 1.8-1.6 1.8zm4.6 0c-.9 0-1.6-.8-1.6-1.8s.7-1.8 1.6-1.8 1.6.8 1.6 1.8-.7 1.8-1.6 1.8z"/></svg></a>
+        <a href="https://t.me/+ChZhHwrFwE05YWNk" target="_blank" rel="noopener" aria-label="Telegram BG"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M11.94 0A12 12 0 1 0 24 12 12 12 0 0 0 11.94 0zm5.58 6.16c.35-.01.78.09.99.5.2.4.12.92-.11 1.77l-2.67 12.55c-.2.9-.74 1.11-1.5.69l-4.14-3.05-2 1.92c-.22.22-.4.4-.83.4l.3-4.22 7.68-6.94c.33-.3-.07-.46-.51-.16l-9.5 5.98-4.09-1.28c-.89-.28-.9-.89.19-1.32l15.98-6.16c.55-.2 1-.05 1.11.32z"/></svg></a>
+        <a href="https://github.com/meshcore-dev/meshcore" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2.9-.3 1.9-.4 2.9-.4s2 .1 2.9.4c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.9 1.2 1.9 1.2 3.2 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg></a>
+      </div>
     </div>
-    <div class="footer-copy">&copy; <span id="year"></span> Meshcore Bulgaria community</div>
-    <div class="footer-kudos" style="color:var(--text-tertiary);font-size:0.75rem;margin-top:-8px;">Kudos to Liam Cottle &amp; Scott Powell; FK Andy K</div>
+    <nav class="footer-col" aria-label="Раздели" data-i18n-aria="footer.col1.aria">
+      <h4 data-i18n="footer.col1">Раздели</h4>
+      <a href="#features" data-i18n="nav.features">Характеристики</a>
+      <a href="#about" data-i18n="nav.about">За нас</a>
+      <a href="#start" data-i18n="nav.start">Как да започнете</a>
+      <a href="#setup" data-i18n="nav.setup">Настройки</a>
+      <a href="#channels" data-i18n="nav.channels">Канали</a>
+      <a href="#regions" data-i18n="nav.regions">Региони</a>
+      <a href="#links" data-i18n="nav.links">Връзки</a>
+    </nav>
+    <nav class="footer-col" aria-label="Ресурси" data-i18n-aria="nav.resources">
+      <h4 data-i18n="footer.col2">Ресурси</h4>
+      <a href="https://meshcore.io" target="_blank" rel="noopener">meshcore.io</a>
+      <a href="https://docs.meshcore.io" target="_blank" rel="noopener" data-i18n="res.docs">Docs</a>
+      <a href="https://blog.meshcore.io" target="_blank" rel="noopener" data-i18n="res.blog">Blog</a>
+      <a href="https://meshcore.io/flasher" target="_blank" rel="noopener" data-i18n="res.flasher">Web Flasher</a>
+      <a href="https://map.meshcore.io" target="_blank" rel="noopener" data-i18n="res.map">Map</a>
+      <a href="https://app.meshcore.nz" target="_blank" rel="noopener" data-i18n="footer.app">Launch App</a>
+    </nav>
+  </div>
+  <div class="container footer-bottom">
+    <p>© 2026 <span data-i18n="footer.rights">Meshcore Bulgaria community</span></p>
+    <p data-i18n-html="footer.kudos">Kudos to Liam Cottle, Scott Powell &amp; FK Andy K</p>
   </div>
 </footer>
 
-<script>
-let lastScrollPosition = 0;
-const header = document.getElementById('header');
-let headerHeight = 0;
-const banner = document.getElementById('banner');
+<button class="to-top" id="to-top" type="button" aria-label="Обратно нагоре" data-i18n-aria="a11y.top">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</button>
 
-function getHeaderOffset() {
-  return banner.classList.contains('hidden') ? 0 : banner.offsetHeight;
-}
-
-function updatePadding() {
-  const bannerH = banner.classList.contains('hidden') ? 0 : banner.offsetHeight;
-  const headerH = header.offsetHeight;
-  document.body.style.paddingTop = (bannerH + headerH) + 'px';
-}
-
-window.addEventListener('load', () => {
-  headerHeight = header.offsetHeight;
-  const offset = getHeaderOffset();
-  if (offset > 0) {
-    header.style.top = offset + 'px';
-  }
-  updatePadding();
-});
-
-window.addEventListener('scroll', () => {
-  const currentScrollPosition = window.scrollY;
-  const offset = getHeaderOffset();
-  header.style.top = offset + 'px';
-
-  if (currentScrollPosition > headerHeight) {
-    if (currentScrollPosition > lastScrollPosition) {
-      header.classList.add('hidden');
-    } else {
-      header.classList.remove('hidden');
-    }
-  } else {
-    header.classList.remove('hidden');
-  }
-  lastScrollPosition = currentScrollPosition;
-});
-
-window.addEventListener('resize', updatePadding);
-
-document.getElementById('year').textContent = new Date().getFullYear();
-
-// Mesh particle canvas animation
-const canvas = document.getElementById('mesh-canvas');
-const ctx = canvas.getContext('2d');
-let particles = [];
-
-function initCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  particles = [];
-  const particleCount = Math.floor((canvas.width * canvas.height) / 15000);
-  for (let i = 0; i < particleCount; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      size: 2
-    });
-  }
-}
-
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (let i = 0; i < particles.length; i++) {
-    let p = particles[i];
-    p.x += p.vx;
-    p.y += p.vy;
-    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-    ctx.fill();
-    for (let j = i + 1; j < particles.length; j++) {
-      let p2 = particles[j];
-      let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-      if (dist < 150) {
-        ctx.strokeStyle = `rgba(255, 255, 255, ${0.0625 * (1 - dist / 150)})`;
-        ctx.lineWidth = 0.8;
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.stroke();
-      }
-    }
-  }
-  requestAnimationFrame(animate);
-}
-
-window.addEventListener('resize', initCanvas);
-initCanvas();
-animate();
-</script>
+<script src="js/i18n.js?v=3" defer></script>
+<script src="js/main.js?v=3" defer></script>
 </body>
 </html>
